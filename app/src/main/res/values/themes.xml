@@ -1,10 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.LocalView" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <!-- Forced dark: mockup is dark-only, no light mode. -->
+    <style name="Theme.LocalView" parent="Theme.MaterialComponents.NoActionBar">
         <item name="colorPrimary">@color/lv_acc</item>
-        <item name="colorOnPrimary">#07120C</item>
+        <item name="colorPrimaryVariant">@color/lv_acc_dim</item>
+        <item name="colorOnPrimary">@color/lv_ink</item>
+        <item name="colorSurface">@color/lv_panel</item>
+        <item name="colorOnSurface">@color/lv_txt</item>
         <item name="android:windowBackground">@color/lv_bg</item>
         <item name="android:textColor">@color/lv_txt</item>
-        <item name="android:editTextBackground">@color/lv_panel</item>
+        <item name="android:textColorHint">@color/lv_mut2</item>
+        <item name="alertDialogTheme">@style/Theme.LocalView.Dialog</item>
+        <item name="bottomSheetDialogTheme">@style/Theme.LocalView.BottomSheet</item>
+    </style>
+
+    <style name="Theme.LocalView.Dialog" parent="ThemeOverlay.MaterialComponents.Dialog">
+        <item name="colorSurface">@color/lv_panel2</item>
+        <item name="android:textColor">@color/lv_txt</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.LocalView.GhostButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.LocalView.GhostButton</item>
+    </style>
+
+    <style name="Theme.LocalView.BottomSheet" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/Widget.LocalView.BottomSheet</item>
+    </style>
+
+    <style name="Widget.LocalView.BottomSheet" parent="Widget.MaterialComponents.BottomSheet.Modal">
+        <item name="android:background">@drawable/lv_card</item>
+    </style>
+
+    <!-- Ghost button: transparent fill, 2dp accent stroke, mono caps. -->
+    <style name="Widget.LocalView.GhostButton" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/lv_btn_ghost</item>
+        <item name="android:textColor">@color/lv_acc</item>
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:letterSpacing">0.05</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:paddingLeft">12dp</item>
+        <item name="android:paddingRight">12dp</item>
+    </style>
+
+    <!-- Square nav key: dark tile, dim border. -->
+    <style name="Widget.LocalView.NavKey" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/lv_chip</item>
+        <item name="android:textColor">@color/lv_mut</item>
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">0dp</item>
+    </style>
+
+    <style name="Widget.LocalView.UrlBar" parent="Widget.AppCompat.EditText">
+        <item name="android:background">@drawable/lv_urlbar</item>
+        <item name="android:textColor">@color/lv_txt</item>
+        <item name="android:textColorHint">@color/lv_mut2</item>
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:padding">11dp</item>
+    </style>
+    <!-- Small pill chip for tab / port strips (background set in code). -->
+    <style name="Widget.LocalView.Chip" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">10dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
     </style>
 </resources>

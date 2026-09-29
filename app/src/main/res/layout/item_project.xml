@@ -2,43 +2,86 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/lv_card"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:padding="10dp">
 
+    <View
+        android:id="@+id/stripe"
+        android:layout_width="6dp"
+        android:layout_height="44dp"
+        android:background="@color/lv_acc" />
+
     <TextView
-        android:id="@+id/dot"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="●"
-        android:textSize="12sp" />
+        android:id="@+id/avatar"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/lv_chip"
+        android:fontFamily="monospace"
+        android:gravity="center"
+        android:text="V"
+        android:textColor="@color/lv_acc"
+        android:textSize="17sp"
+        android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:paddingStart="10dp">
+        android:paddingStart="12dp"
+        android:paddingEnd="8dp">
 
-        <TextView
-            android:id="@+id/pName"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="monospace"
-            android:textSize="14sp" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <View
+                android:id="@+id/dot"
+                android:layout_width="9dp"
+                android:layout_height="9dp"
+                android:background="@color/lv_acc" />
+
+            <TextView
+                android:id="@+id/pName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:fontFamily="monospace"
+                android:textColor="@color/lv_txt"
+                android:textSize="13sp" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/pUrl"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/lv_chip"
             android:fontFamily="monospace"
+            android:paddingLeft="6dp"
+            android:paddingRight="6dp"
+            android:textColor="@color/lv_acc"
+            android:textSize="11sp" />
+
+        <TextView
+            android:id="@+id/pState"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:fontFamily="monospace"
+            android:textColor="@color/lv_mut"
             android:textSize="11sp" />
     </LinearLayout>
 
     <Button
         android:id="@+id/pOpen"
+        style="@style/Widget.LocalView.GhostButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minWidth="0dp"
         android:text="Open" />
 </LinearLayout>

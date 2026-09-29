@@ -2,9 +2,20 @@
 <resources>
     <color name="lv_bg">#0A0E0B</color>
     <color name="lv_panel">#0F1412</color>
+    <color name="lv_panel2">#141B17</color>
+    <color name="lv_field">#0E1411</color>
+    <color name="lv_wash">#122019</color>
     <color name="lv_acc">#4ED58A</color>
+    <color name="lv_acc_dim">#2C7A52</color>
+    <color name="lv_line_dim">#2C4F3A</color>
+    <color name="lv_line_faint">#1D2C23</color>
     <color name="lv_cyan">#56C2BB</color>
     <color name="lv_amber">#E2A84E</color>
+    <color name="lv_clay">#D48473</color>
+    <color name="lv_slate">#8FA3D9</color>
+    <color name="lv_moss">#A9C46A</color>
     <color name="lv_txt">#E2EFE6</color>
     <color name="lv_mut">#8FA895</color>
+    <color name="lv_mut2">#5C7163</color>
+    <color name="lv_ink">#07120C</color>
 </resources>

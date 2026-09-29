@@ -16,57 +16,62 @@
 
         <Button
             android:id="@+id/btnBack"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:minWidth="0dp"
+            style="@style/Widget.LocalView.NavKey"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
             android:text="←" />
 
         <Button
             android:id="@+id/btnFwd"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:minWidth="0dp"
+            style="@style/Widget.LocalView.NavKey"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_marginStart="6dp"
             android:text="→" />
 
         <Button
             android:id="@+id/btnReload"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:minWidth="0dp"
+            style="@style/Widget.LocalView.NavKey"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_marginStart="6dp"
             android:text="⟳" />
 
         <EditText
             android:id="@+id/urlBar"
+            style="@style/Widget.LocalView.UrlBar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp"
             android:layout_weight="1"
-            android:fontFamily="monospace"
             android:hint="port > 5173"
             android:imeOptions="actionGo"
             android:inputType="textUri"
-            android:singleLine="true"
-            android:textSize="13sp" />
+            android:singleLine="true" />
 
         <Button
             android:id="@+id/btnGo"
+            style="@style/Widget.LocalView.GhostButton"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:minWidth="0dp"
+            android:layout_height="38dp"
             android:text="Go" />
 
         <Button
             android:id="@+id/btnTabs"
+            style="@style/Widget.LocalView.NavKey"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:minWidth="48dp"
-            android:text="▦ 0" />
+            android:layout_height="38dp"
+            android:layout_marginStart="6dp"
+            android:text="▦ 0"
+            android:textColor="@color/lv_acc" />
 
         <Button
             android:id="@+id/btnMenu"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:minWidth="0dp"
+            style="@style/Widget.LocalView.NavKey"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_marginStart="6dp"
             android:text="⋮" />
     </LinearLayout>
 
@@ -80,7 +85,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="6dp" />
+            android:padding="8dp" />
     </HorizontalScrollView>
 
     <FrameLayout
@@ -93,26 +98,55 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="12dp">
+            android:padding="14dp">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="monospace"
-                android:text="LOCAL PROJECTS"
-                android:textColor="@color/lv_acc"
-                android:textSize="11sp" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:background="@color/lv_acc" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="monospace"
+                    android:text="LOCAL PROJECTS"
+                    android:textColor="@color/lv_acc"
+                    android:textSize="11sp" />
+
+                <TextView
+                    android:id="@+id/projCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/lv_chip"
+                    android:fontFamily="monospace"
+                    android:paddingLeft="7dp"
+                    android:paddingRight="7dp"
+                    android:text="0"
+                    android:textColor="@color/lv_mut"
+                    android:textSize="10sp" />
+            </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/projectList"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_marginTop="8dp"
                 android:layout_weight="1" />
 
             <Button
                 android:id="@+id/btnAdd"
+                style="@style/Widget.LocalView.GhostButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:text="+ Add localhost project" />
         </LinearLayout>
 
@@ -127,8 +161,9 @@
         android:id="@+id/devbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/lv_bg"
         android:orientation="vertical"
-        android:padding="8dp"
+        android:padding="10dp"
         android:visibility="gone">
 
         <TextView
@@ -137,11 +172,13 @@
             android:layout_height="wrap_content"
             android:fontFamily="monospace"
             android:text="[SYS] idle"
+            android:textColor="@color/lv_mut"
             android:textSize="10sp" />
 
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
             android:scrollbars="none">
 
             <LinearLayout
@@ -153,8 +190,10 @@
 
         <Button
             android:id="@+id/btnDevtools"
+            style="@style/Widget.LocalView.GhostButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="DEVTOOLS [F12]" />
     </LinearLayout>
 </LinearLayout>

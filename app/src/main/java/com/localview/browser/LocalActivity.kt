@@ -1,5 +1,7 @@
 package com.localview.browser
 
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -36,6 +38,13 @@ class LocalActivity : AppCompatActivity() {
     private lateinit var urlBar: EditText
     private lateinit var statLine: TextView
     private lateinit var adapter: ProjectAdapter
+
+    companion object {
+        /** Mockup accent variety, desaturated Matrix set. */
+        private val ACCENTS = listOf("#4ED58A", "#56C2BB", "#A9C46A", "#E2A84E", "#D48473", "#8FA3D9")
+        fun accentFor(port: Int): Int =
+            Color.parseColor(ACCENTS[Math.abs(port) % ACCENTS.size])
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,6 +103,7 @@ class LocalActivity : AppCompatActivity() {
         projects = repo.load()
         live = projects.associate { it.port to Probe.check(it.port).live }
         adapter.submit(projects, live)
+        findViewById<TextView>(R.id.projCount).text = projects.size.toString()
     }
 
     private fun go() {
@@ -120,6 +130,9 @@ class LocalActivity : AppCompatActivity() {
             val p = port ?: return@launch
             val r = Probe.check(p)
             statLine.text = if (r.live) "[OK] :$p live — ${r.ms}ms" else "[OFF] :$p offline"
+            statLine.setTextColor(
+                getColor(if (r.live) R.color.lv_acc else R.color.lv_amber),
+            )
         }
     }
 
@@ -136,17 +149,25 @@ class LocalActivity : AppCompatActivity() {
         lifecycleScope.launch { refresh() }
     }
 
+    private fun chip(text: String, on: Boolean): Button =
+        Button(this, null, 0, R.style.Widget_LocalView_Chip).apply {
+            this.text = text
+            minWidth = 0
+            setBackgroundResource(if (on) R.drawable.lv_chip_on else R.drawable.lv_chip)
+            setTextColor(getColor(if (on) R.color.lv_acc else R.color.lv_mut))
+        }
+
     private fun renderTabs() {
         val strip = findViewById<LinearLayout>(R.id.tabStrip)
         strip.removeAllViews()
         findViewById<Button>(R.id.btnTabs).text = "▦ ${tabs.size}"
         tabs.forEach { p ->
-            val b = Button(this).apply {
-                text = ":$p"; minWidth = 0
+            val b = chip(":$p", p == active).apply {
                 setOnClickListener { openUrl("http://localhost:$p/", p) }
                 setOnLongClickListener { tabs.remove(p); if (active == p) active = tabs.lastOrNull() ?: -1; renderTabs(); true }
             }
             strip.addView(b)
+            (b.layoutParams as? LinearLayout.LayoutParams)?.marginEnd = dp(6)
         }
     }
 
@@ -154,13 +175,15 @@ class LocalActivity : AppCompatActivity() {
         val strip = findViewById<LinearLayout>(R.id.portStrip)
         strip.removeAllViews()
         (projects.map { it.port } + listOf(3000, 5173, 8000, 8080, 9000)).distinct().forEach { p ->
-            val b = Button(this).apply {
-                text = ":$p"; minWidth = 0
+            val b = chip(":$p", p == active).apply {
                 setOnClickListener { openUrl("http://localhost:$p/", p) }
             }
             strip.addView(b)
+            (b.layoutParams as? LinearLayout.LayoutParams)?.marginEnd = dp(6)
         }
     }
+
+    private fun dp(v: Int): Int = (v * resources.displayMetrics.density).toInt()
 
     private fun menu() {
         val items = arrayOf("Hard reload", "Clear site data for this port", "Pin to Home (shortcut)", "Dashboard")
@@ -208,9 +231,11 @@ class LocalActivity : AppCompatActivity() {
         }
 
         class H(v: View) : RecyclerView.ViewHolder(v) {
-            val dot: TextView = v.findViewById(R.id.dot)
+            val stripe: View = v.findViewById(R.id.stripe)
+            val avatar: TextView = v.findViewById(R.id.avatar)
             val name: TextView = v.findViewById(R.id.pName)
-            val url: TextView = v.findViewById(R.id.pUrl)
+            val port: TextView = v.findViewById(R.id.pUrl)
+            val state: TextView = v.findViewById(R.id.pState)
             val open: Button = v.findViewById(R.id.pOpen)
         }
 
@@ -222,9 +247,21 @@ class LocalActivity : AppCompatActivity() {
         override fun onBindViewHolder(h: H, pos: Int) {
             val p = items[pos]
             val isLive = live[p.port] ?: true
-            h.dot.text = if (isLive) "●" else "○"
-            h.name.text = p.name
-            h.url.text = ":${p.port} — ${if (isLive) "LIVE" else "OFF"}"
+            val acc = accentFor(p.port)
+            val ctx = h.itemView.context
+            h.stripe.setBackgroundColor(acc)
+            h.avatar.text = p.name.firstOrNull()?.uppercase() ?: "L"
+            h.avatar.setTextColor(acc)
+            (h.avatar.background.mutate() as GradientDrawable).setStroke(
+                (2 * ctx.resources.displayMetrics.density).toInt(), acc,
+            )
+            h.name.text = p.name.uppercase()
+            h.port.text = ":${p.port}"
+            h.port.setTextColor(acc)
+            h.state.text = if (isLive) "[LIVE]" else "[OFF]"
+            h.state.setTextColor(
+                ctx.getColor(if (isLive) R.color.lv_mut else R.color.lv_amber),
+            )
             h.open.setOnClickListener { onOpen(p) }
             h.itemView.setOnClickListener { onOpen(p) }
             h.itemView.setOnLongClickListener { onLong(p) }

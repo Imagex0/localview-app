@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/lv_panel"
+    android:background="@drawable/lv_card"
     android:orientation="vertical"
     android:padding="12dp">
 
@@ -19,14 +19,19 @@
             android:fontFamily="monospace"
             android:text=":5173"
             android:textColor="@color/lv_acc"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:background="@drawable/lv_chip"
             android:fontFamily="monospace"
+            android:paddingLeft="6dp"
+            android:paddingRight="6dp"
             android:text="F12"
+            android:textColor="@color/lv_mut"
             android:textSize="10sp" />
 
         <LinearLayout
@@ -38,23 +43,25 @@
 
             <Button
                 android:id="@+id/dtHtml"
+                style="@style/Widget.LocalView.GhostButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minWidth="0dp"
                 android:text="HTML" />
 
             <Button
                 android:id="@+id/dtJs"
+                style="@style/Widget.LocalView.GhostButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minWidth="0dp"
+                android:layout_marginStart="6dp"
                 android:text="JS" />
 
             <Button
                 android:id="@+id/dtLog"
+                style="@style/Widget.LocalView.GhostButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minWidth="0dp"
+                android:layout_marginStart="6dp"
                 android:text="LOG" />
         </LinearLayout>
     </LinearLayout>
@@ -62,13 +69,16 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="220dp"
-        android:layout_marginTop="8dp">
+        android:layout_marginTop="10dp"
+        android:background="@drawable/lv_chip">
 
         <TextView
             android:id="@+id/dtCode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="monospace"
+            android:padding="10dp"
+            android:textColor="@color/lv_txt"
             android:textSize="11sp" />
     </ScrollView>
 </LinearLayout>
