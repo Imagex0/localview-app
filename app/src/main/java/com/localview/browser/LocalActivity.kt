@@ -76,6 +76,7 @@ class LocalActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnTabs).setOnClickListener { showBrowser() }
         findViewById<Button>(R.id.btnMenu).setOnClickListener { menu() }
         findViewById<Button>(R.id.btnAdd).setOnClickListener { addDialog() }
+        findViewById<Button>(R.id.btnAddTop).setOnClickListener { addDialog() }
         findViewById<Button>(R.id.btnDevtools).setOnClickListener { devtools() }
 
         web.onConsole = { line -> statLine.text = "[LOG] ${line.take(120)}" }
@@ -300,8 +301,10 @@ class LocalActivity : AppCompatActivity() {
         class H(v: View) : RecyclerView.ViewHolder(v) {
             val stripe: View = v.findViewById(R.id.stripe)
             val avatar: TextView = v.findViewById(R.id.avatar)
+            val dot: View = v.findViewById(R.id.dot)
             val name: TextView = v.findViewById(R.id.pName)
             val port: TextView = v.findViewById(R.id.pUrl)
+            val desc: TextView = v.findViewById(R.id.pDesc)
             val state: TextView = v.findViewById(R.id.pState)
             val open: Button = v.findViewById(R.id.pOpen)
         }
@@ -325,6 +328,8 @@ class LocalActivity : AppCompatActivity() {
             h.name.text = p.name.uppercase()
             h.port.text = ":${p.port}"
             h.port.setTextColor(acc)
+            h.dot.setBackgroundColor(if (isLive) acc else ctx.getColor(R.color.lv_amber))
+            h.desc.text = p.url.removePrefix("http://").removePrefix("https://").removeSuffix("/")
             h.state.text = if (isLive) "[LIVE]" else "[OFF]"
             h.state.setTextColor(
                 ctx.getColor(if (isLive) R.color.lv_mut else R.color.lv_amber),
