@@ -102,6 +102,12 @@ class LocalActivity : AppCompatActivity() {
         findViewById<View>(R.id.btnReload).setOnLongClickListener { web.hardReload(); toast("[SYS] hard reload"); true }
         findViewById<View>(R.id.tabsBadge).setOnClickListener { showBrowser() }
         findViewById<View>(R.id.btnMenu).setOnClickListener { menu() }
+        findViewById<View>(R.id.btnHome).setOnClickListener { showDashboard() }
+        // Focus glow on the URL bar: border lights up, like :focus in the mockup.
+        val urlBox: View = findViewById(R.id.urlBarBox)
+        urlBar.setOnFocusChangeListener { _, has ->
+            urlBox.setBackgroundResource(if (has) R.drawable.lv_urlbar_focus else R.drawable.lv_urlbar)
+        }
         findViewById<Button>(R.id.btnAdd).setOnClickListener { addDialog() }
         findViewById<Button>(R.id.btnAddTop).setOnClickListener { addDialog() }
         findViewById<Button>(R.id.btnDevtools).setOnClickListener { devtools() }

@@ -6,138 +6,170 @@
     android:background="@color/lv_bg"
     android:orientation="vertical">
 
-    <!-- ============ BROWSER CHROME (.chrome) ============ -->
+    <!-- ============ BROWSER CHROME: row 1 transport, row 2 clear URL bar ============ -->
     <LinearLayout
         android:id="@+id/chromeBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/lv_bg"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="8dp"
+        android:orientation="vertical"
+        android:paddingStart="8dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="8dp"
         android:visibility="gone">
 
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/btnBack"
-            android:layout_width="36dp"
-            android:layout_height="38dp"
-            android:background="@drawable/lv_nav"
-            android:contentDescription="Back"
-            android:src="@drawable/ic_back"
-            app:tint="@color/lv_mut" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/btnFwd"
-            android:layout_width="36dp"
-            android:layout_height="38dp"
-            android:layout_marginStart="6dp"
-            android:background="@drawable/lv_nav"
-            android:contentDescription="Forward"
-            android:src="@drawable/ic_fwd"
-            app:tint="@color/lv_mut" />
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/lv_nav"
+                android:contentDescription="Back"
+                android:src="@drawable/ic_back"
+                app:tint="@color/lv_mut" />
 
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/btnReload"
-            android:layout_width="36dp"
-            android:layout_height="38dp"
-            android:layout_marginStart="6dp"
-            android:background="@drawable/lv_nav"
-            android:contentDescription="Reload"
-            android:src="@drawable/ic_reload"
-            app:tint="@color/lv_mut" />
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/btnFwd"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/lv_nav"
+                android:contentDescription="Forward"
+                android:src="@drawable/ic_fwd"
+                app:tint="@color/lv_mut" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/btnReload"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/lv_nav"
+                android:contentDescription="Reload"
+                android:src="@drawable/ic_reload"
+                app:tint="@color/lv_mut" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <LinearLayout
+                android:id="@+id/tabsBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:background="@drawable/lv_nav"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:src="@drawable/ic_grid"
+                    app:tint="@color/lv_acc" />
+
+                <TextView
+                    android:id="@+id/tabCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:fontFamily="monospace"
+                    android:text="0"
+                    android:textColor="@color/lv_acc"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/btnMenu"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/lv_nav"
+                android:contentDescription="Menu"
+                android:src="@drawable/ic_menu"
+                app:tint="@color/lv_acc" />
+        </LinearLayout>
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:layout_marginEnd="6dp"
-            android:layout_weight="1"
-            android:background="@drawable/lv_urlbar"
+            android:layout_marginTop="8dp"
             android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingStart="8dp"
-            android:paddingTop="5dp"
-            android:paddingEnd="6dp"
-            android:paddingBottom="5dp">
+            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/portPill"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/lv_chip"
-                android:fontFamily="monospace"
-                android:paddingLeft="6dp"
-                android:paddingRight="6dp"
-                android:text=":5173"
-                android:textColor="@color/lv_acc"
-                android:textSize="10sp"
-                android:textStyle="bold" />
-
-            <EditText
-                android:id="@+id/urlBar"
+            <LinearLayout
+                android:id="@+id/urlBarBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:background="@null"
-                android:fontFamily="monospace"
-                android:hint="port > 5173"
-                android:imeOptions="actionGo"
-                android:inputType="textUri"
-                android:singleLine="true"
-                android:textColor="@color/lv_txt"
-                android:textColorHint="@color/lv_mut2"
-                android:textSize="12sp" />
-        </LinearLayout>
+                android:background="@drawable/lv_urlbar"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="10dp"
+                android:paddingTop="7dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="7dp">
 
-        <Button
-            android:id="@+id/btnGo"
-            style="@style/Widget.LocalView.GhostButton"
-            android:layout_width="wrap_content"
-            android:layout_height="38dp"
-            app:backgroundTint="@null"
-            android:text="Go" />
+                <TextView
+                    android:id="@+id/portPill"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/lv_chip"
+                    android:fontFamily="monospace"
+                    android:paddingLeft="7dp"
+                    android:paddingRight="7dp"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:text=":5173"
+                    android:textColor="@color/lv_acc"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
 
-        <LinearLayout
-            android:id="@+id/tabsBadge"
-            android:layout_width="wrap_content"
-            android:layout_height="38dp"
-            android:layout_marginStart="6dp"
-            android:background="@drawable/lv_nav"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp">
+                <EditText
+                    android:id="@+id/urlBar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:fontFamily="monospace"
+                    android:hint="localhost:PORT / path"
+                    android:imeOptions="actionGo"
+                    android:inputType="textUri"
+                    android:singleLine="true"
+                    android:textColor="@color/lv_txt"
+                    android:textColorHint="@color/lv_mut2"
+                    android:textSize="14sp" />
+            </LinearLayout>
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="14dp"
-                android:layout_height="14dp"
-                android:src="@drawable/ic_grid"
-                app:tint="@color/lv_acc" />
-
-            <TextView
-                android:id="@+id/tabCount"
+            <Button
+                android:id="@+id/btnGo"
+                style="@style/Widget.LocalView.GhostButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:fontFamily="monospace"
-                android:text="0"
-                android:textColor="@color/lv_acc"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+                android:layout_height="44dp"
+                android:layout_marginStart="8dp"
+                app:backgroundTint="@null"
+                android:text="Go" />
 
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/btnMenu"
-            android:layout_width="36dp"
-            android:layout_height="38dp"
-            android:layout_marginStart="6dp"
-            android:background="@drawable/lv_nav"
-            android:contentDescription="Menu"
-            android:src="@drawable/ic_menu"
-            app:tint="@color/lv_acc" />
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/btnHome"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/lv_nav"
+                android:contentDescription="Dashboard"
+                android:src="@drawable/ic_home"
+                app:tint="@color/lv_acc" />
+        </LinearLayout>
     </LinearLayout>
 
     <View
