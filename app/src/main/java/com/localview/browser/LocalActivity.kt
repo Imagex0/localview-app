@@ -27,12 +27,12 @@ import kotlinx.coroutines.launch
 class LocalActivity : AppCompatActivity() {
 
     private lateinit var repo: ProjectsRepo
+    private lateinit var store: LocalStore
     private var projects: List<ProjectsRepo.Project> = emptyList()
     private var live: Map<Int, Boolean> = emptyMap()
 
     private val tabs = ArrayDeque<Int>()
     private var active: Int = -1
-    private val history = ArrayDeque<String>(20)
 
     private lateinit var web: LocalWebView
     private lateinit var urlBar: EditText
@@ -50,6 +50,7 @@ class LocalActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_local)
         repo = ProjectsRepo(this)
+        store = LocalStore(this)
 
         web = findViewById(R.id.web)
         urlBar = findViewById(R.id.urlBar)
@@ -58,9 +59,11 @@ class LocalActivity : AppCompatActivity() {
         findViewById<RecyclerView>(R.id.projectList).layoutManager = LinearLayoutManager(this)
         adapter = ProjectAdapter(
             onOpen = { openUrl(it.url, it.port) },
-            onLong = { p -> lifecycleScope.launch { repo.remove(p.port); refresh() }; true },
+            onLong = { p -> repo.remove(p.port); reloadProjects(); true },
         )
         findViewById<RecyclerView>(R.id.projectList).adapter = adapter
+        // Synchronous load: projects are visible on first frame, never await a store.
+        reloadProjects()
 
         findViewById<Button>(R.id.btnGo).setOnClickListener { go() }
         urlBar.setOnEditorActionListener { _, id, _ ->
@@ -79,7 +82,40 @@ class LocalActivity : AppCompatActivity() {
         web.onProgress = { p -> if (p == 100) statLine.text = "[OK] loaded" }
 
         handleIntent()
-        lifecycleScope.launch { refresh() }
+        restoreSession()
+        lifecycleScope.launch { probeAll() }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        persistSession()
+    }
+
+    /** Session survives process death: tabs + active port + last URL per port. */
+    private fun persistSession() {
+        store.tabs = tabs.toList()
+        store.activePort = active
+        val cur = web.url
+        if (active > 0 && cur != null) store.putLastUrl(active, cur)
+    }
+
+    private fun restoreSession() {
+        val saved = store.tabs.filter { it > 0 }
+        if (saved.isEmpty()) return
+        tabs.clear()
+        tabs.addAll(saved)
+        renderTabs()
+        renderPorts()
+        val a = store.activePort.takeIf { saved.contains(it) } ?: saved.last()
+        openUrl(store.lastUrl(a) ?: "http://localhost:$a/", a)
+    }
+
+    /** Projects come from disk synchronously; only liveness probes suspend. */
+    private fun reloadProjects() {
+        projects = repo.load()
+        adapter.submit(projects, live)
+        findViewById<TextView>(R.id.projCount).text = projects.size.toString()
+        renderPorts()
     }
 
     override fun onKeyDown(code: Int, event: KeyEvent): Boolean {
@@ -99,11 +135,14 @@ class LocalActivity : AppCompatActivity() {
         if (d.scheme == "http" || d.scheme == "https") openUrl(d.toString(), null)
     }
 
-    private suspend fun refresh() {
-        projects = repo.load()
+    private suspend fun probeAll() {
         live = projects.associate { it.port to Probe.check(it.port).live }
         adapter.submit(projects, live)
-        findViewById<TextView>(R.id.projCount).text = projects.size.toString()
+    }
+
+    private fun refresh() {
+        reloadProjects()
+        lifecycleScope.launch { probeAll() }
     }
 
     private fun go() {
@@ -112,14 +151,15 @@ class LocalActivity : AppCompatActivity() {
     }
 
     private fun openUrl(url: String, port: Int?) {
-        if (history.size >= 20) history.removeFirst()
-        history.addLast(url)
+        store.pushHistory(url)
         port?.let {
             if (!tabs.contains(it)) {
                 if (tabs.size >= 5) tabs.removeFirst()
                 tabs.addLast(it)
             }
             active = it
+            store.putLastUrl(it, url)
+            persistSession()
         }
         urlBar.setText(url)
         showBrowser()
@@ -186,22 +226,46 @@ class LocalActivity : AppCompatActivity() {
     private fun dp(v: Int): Int = (v * resources.displayMetrics.density).toInt()
 
     private fun menu() {
-        val items = arrayOf("Hard reload", "Clear site data for this port", "Pin to Home (shortcut)", "Dashboard")
+        val items = arrayOf("Hard reload", "Clear site data for this port", "Storage", "Pin to Home (shortcut)", "Dashboard")
         AlertDialog.Builder(this)
             .setTitle("Menu")
             .setItems(items) { _, w ->
                 when (w) {
                     0 -> { web.hardReload(); toast("[SYS] hard reload") }
                     1 -> { web.clearSiteData(active); toast("[SYS] site data cleared") }
-                    2 -> { toast("[SYS] pin to Home coming via shortcut") }
-                    3 -> showDashboard()
+                    2 -> storageDialog()
+                    3 -> { toast("[SYS] pin to Home coming via shortcut") }
+                    4 -> showDashboard()
                 }
             }.show()
     }
 
+    /** Visible on-device storage: what LocalView keeps + one-tap clearing. */
+    private fun storageDialog() {
+        val stats = "Projects: ${repo.count()}\n" +
+            "History: ${store.history.size} / 20\n" +
+            "Open tabs: ${tabs.size} / 5\n" +
+            "Cache: ${store.cacheMb()}\n" +
+            "Session: ${if (store.activePort > 0) "resumes :${store.activePort}" else "none"}"
+        AlertDialog.Builder(this)
+            .setTitle("Storage")
+            .setMessage(stats)
+            .setNeutralButton("Clear history") { _, _ -> store.clearHistory(); toast("[SYS] history cleared") }
+            .setNegativeButton("Clear cache") { _, _ ->
+                web.clearCache(true); store.clearCache(); toast("[SYS] cache cleared")
+            }
+            .setPositiveButton("Reset all") { _, _ ->
+                store.resetAll(this)
+                tabs.clear(); active = -1
+                reloadProjects(); showDashboard(); toast("[SYS] storage reset")
+            }
+            .show()
+    }
+
     private fun devtools() {
         if (web.visibility != View.VISIBLE) { toast("[SYS] open a project first"); return }
-        DevToolsSheet(web, active).show(supportFragmentManager, "devtools")
+        DevToolsSheet(web, active, store.devtoolsTab) { store.devtoolsTab = it }
+            .show(supportFragmentManager, "devtools")
     }
 
     private fun addDialog() {
@@ -211,7 +275,10 @@ class LocalActivity : AppCompatActivity() {
         val box = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; addView(name); addView(port); setPadding(40, 20, 40, 20) }
         AlertDialog.Builder(this).setTitle(getString(R.string.add_title)).setView(box)
             .setPositiveButton("Save") { _, _ ->
-                lifecycleScope.launch { repo.add(name.text.toString(), port.text.toString()); refresh() }
+                val p = repo.add(name.text.toString(), port.text.toString())
+                reloadProjects()
+                lifecycleScope.launch { probeAll() }
+                toast("[SYS] saved :${p.port}")
             }
             .setNegativeButton("Cancel", null).show()
         v.toString()

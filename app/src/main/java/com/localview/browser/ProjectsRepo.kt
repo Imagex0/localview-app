@@ -1,54 +1,65 @@
 package com.localview.browser
 
 import android.content.Context
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import org.json.JSONArray
 import org.json.JSONObject
 
-private val Context.store by preferencesDataStore("localview")
-
-/** {name, url, port} project repo. DataStore-backed, no database weight. */
-class ProjectsRepo(private val context: Context) {
+/**
+ * {name, url, port} project repo.
+ *
+ * SharedPreferences-backed and fully synchronous: writes commit to disk
+ * immediately, reads never suspend, so an added project can never be lost
+ * to a hung async store. (DataStore was dropped for exactly this failure.)
+ */
+class ProjectsRepo(context: Context) {
 
     data class Project(val name: String, val url: String, val port: Int)
 
-    private val key = stringPreferencesKey("projects")
+    private val prefs = context.getSharedPreferences("localview_projects", Context.MODE_PRIVATE)
 
-    suspend fun load(): List<Project> {
-        val raw = context.store.data.map { it[key] }.first() ?: return defaults()
+    fun load(): List<Project> {
+        val raw = prefs.getString(KEY, null) ?: return seed()
         return runCatching {
             val arr = JSONArray(raw)
             List(arr.length()) { i ->
                 val o = arr.getJSONObject(i)
                 Project(o.getString("name"), o.getString("url"), o.getInt("port"))
-            }
-        }.getOrDefault(defaults())
+            }.ifEmpty { seed() }
+        }.getOrDefault(seed())
     }
 
-    suspend fun save(projects: List<Project>) {
+    fun save(projects: List<Project>): Boolean {
         val arr = JSONArray()
         projects.forEach { arr.put(JSONObject().put("name", it.name).put("url", it.url).put("port", it.port)) }
-        context.store.edit { it[key] = arr.toString() }
+        // commit() = synchronous, returns true only when bytes hit disk.
+        return prefs.edit().putString(KEY, arr.toString()).commit()
     }
 
-    suspend fun add(name: String, input: String): Project {
+    fun add(name: String, input: String): Project {
         val t = LocalPort.parse(input)
         val p = Project(name.ifBlank { "localhost:${t.port ?: "app"}" }, t.url, t.port ?: 80)
-        save(listOf(p) + load())
+        save(listOf(p) + load().filterNot { it.port == p.port })
         return p
     }
 
-    suspend fun remove(port: Int) {
-        save(load().filterNot { it.port == port })
+    fun remove(port: Int): Boolean = save(load().filterNot { it.port == port })
+
+    fun clear(): Boolean = prefs.edit().remove(KEY).commit()
+
+    fun count(): Int = load().size
+
+    /** First run: seed defaults AND persist them, so storage exists from day one. */
+    private fun seed(): List<Project> {
+        val d = listOf(
+            Project("Vite React", "http://localhost:5173/", 5173),
+            Project("Next.js", "http://localhost:3000/", 3000),
+            Project("Python Docs", "http://localhost:8000/", 8000),
+        )
+        save(d)
+        return d
     }
 
-    private fun defaults() = listOf(
-        Project("Vite React", "http://localhost:5173/", 5173),
-        Project("Next.js", "http://localhost:3000/", 3000),
-        Project("Python Docs", "http://localhost:8000/", 8000),
-    )
+    companion object {
+        private const val KEY = "projects_json"
+    }
 }

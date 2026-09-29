@@ -12,11 +12,13 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 class DevToolsSheet(
     private val web: LocalWebView,
     private val port: Int,
+    initialTab: String = "html",
+    private val onTab: ((String) -> Unit)? = null,
 ) : BottomSheetDialogFragment() {
 
     private lateinit var code: TextView
     private lateinit var portView: TextView
-    private var tab = "html"
+    private var tab = initialTab
 
     override fun onCreateView(i: LayoutInflater, c: ViewGroup?, s: Bundle?): View =
         i.inflate(R.layout.sheet_devtools, c, false)
@@ -28,9 +30,15 @@ class DevToolsSheet(
         val h: Button = v.findViewById(R.id.dtHtml)
         val j: Button = v.findViewById(R.id.dtJs)
         val l: Button = v.findViewById(R.id.dtLog)
-        h.setOnClickListener { tab = "html"; render() }
-        j.setOnClickListener { tab = "js"; render() }
-        l.setOnClickListener { tab = "log"; render() }
+        h.setOnClickListener { select("html") }
+        j.setOnClickListener { select("js") }
+        l.setOnClickListener { select("log") }
+        render()
+    }
+
+    private fun select(t: String) {
+        tab = t
+        onTab?.invoke(t)
         render()
     }
 
