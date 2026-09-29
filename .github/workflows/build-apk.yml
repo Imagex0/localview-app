@@ -17,9 +17,18 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - uses: android-actions/setup-android@v3
+      # NOTE: ubuntu-latest runners already ship the Android SDK
+      # (ANDROID_SDK_ROOT). The setup-android action is intentionally not
+      # used: its sdkmanager call fails on current runner images.
+      - name: Ensure SDK packages + accept licenses
+        run: |
+          yes | "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null
+          "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" \
+            "platforms;android-35" "build-tools;35.0.0" "platform-tools"
 
       - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.10"
 
       - name: Build debug APK
         run: gradle :app:assembleDebug --no-daemon
