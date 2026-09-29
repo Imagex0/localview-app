@@ -87,6 +87,11 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
         <Button
             android:id="@+id/pOpen"
             style="@style/Widget.LocalView.GhostButton"
@@ -95,6 +100,18 @@
             xmlns:app="http://schemas.android.com/apk/res-auto"
             app:backgroundTint="@null"
             android:text="Open" />
+
+        <Button
+            android:id="@+id/pDel"
+            style="@style/Widget.LocalView.Chip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/lv_chip"
+            android:text="× DELETE"
+            android:textColor="@color/lv_mut2" />
+    </LinearLayout>
 
         <TextView
             android:id="@+id/pState"

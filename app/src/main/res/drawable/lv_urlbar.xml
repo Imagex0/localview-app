@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
-    <solid android:color="@color/lv_field" />
-    <stroke android:width="2dp" android:color="@color/lv_line_dim" />
-    <corners android:radius="7dp" />
-</shape>
+<!-- URL field + 3px hard shadow, like .quick input -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:left="3dp"
+        android:top="3dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/lv_shadow" />
+            <corners android:radius="7dp" />
+        </shape>
+    </item>
+    <item
+        android:right="3dp"
+        android:bottom="3dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/lv_field" />
+            <stroke
+                android:width="2dp"
+                android:color="@color/lv_line_dim" />
+            <corners android:radius="7dp" />
+        </shape>
+    </item>
+</layer-list>

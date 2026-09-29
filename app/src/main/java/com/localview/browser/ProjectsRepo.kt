@@ -25,7 +25,7 @@ class ProjectsRepo(context: Context) {
                 val o = arr.getJSONObject(i)
                 Project(o.getString("name"), o.getString("url"), o.getInt("port"))
             }.ifEmpty { seed() }
-        }.getOrDefault(seed())
+        }.getOrElse { seed() }
     }
 
     fun save(projects: List<Project>): Boolean {

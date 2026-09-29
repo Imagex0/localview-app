@@ -18,4 +18,5 @@
     <color name="lv_mut">#8FA895</color>
     <color name="lv_mut2">#5C7163</color>
     <color name="lv_ink">#07120C</color>
+    <color name="lv_shadow">#16241C</color>
 </resources>
