@@ -1,0 +1,49 @@
+name: release-apk
+
+# One-tap direct .apk download (no zip to extract): Releases page gets
+# app-debug.apk straight from CI. Trigger manually or push a v* tag.
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag
+        default: v0.1.0
+        required: true
+  push:
+    tags: ["v*"]
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Ensure SDK packages + accept licenses
+        run: |
+          yes | "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null
+          "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" \
+            "platforms;android-35" "build-tools;35.0.0" "platform-tools"
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.10"
+
+      - name: Build debug APK
+        run: gradle :app:assembleDebug --no-daemon
+
+      - name: Publish to Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.tag || github.ref_name }}
+          name: LocalView ${{ github.event.inputs.tag || github.ref_name }}
+          body: |
+            LocalView debug APK — lightweight localhost WebView.
+            Uninstall any older copy first if install stalls (signature changed once, stable now).
+          files: app/build/outputs/apk/debug/*.apk
