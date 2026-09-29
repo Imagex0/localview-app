@@ -16,6 +16,19 @@ android {
         vectorDrawables { useSupportLibrary = true }
     }
 
+    signingConfigs {
+        // Fixed debug key: every CI build shares one signature, so updates
+        // install over each other instead of conflicting. Debug key only —
+        // never used for release. Passwords are the public Android convention.
+        named("debug") {
+            storeFile = file("debug.keystore")
+            storePassword = "android"
+            keyAlias = "localview-debug"
+            keyPassword = "android"
+            storeType = "pkcs12"
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
@@ -27,6 +40,7 @@ android {
         }
         debug {
             applicationIdSuffix = ".debug"
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 
