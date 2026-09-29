@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>LocalView — localhost browser (mockup)</title>
+<link rel="stylesheet" href="./styles.css"/>
+</head>
+<body>
+<div class="phone">
+  <div class="topbar">
+    <div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg></div>
+    <div class="title">LocalView<small>localhost / fast webview / mock</small></div>
+    <span class="chip">v0.1 mock</span>
+    <button class="iconbtn" onclick="location.href='./browser.html'" title="Open browser"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M8 7h9v9"/></svg></button>
+  </div>
+
+  <div class="quick">
+    <input id="quickInput" placeholder="port or url > 5173" inputmode="url"/>
+    <button onclick="quickOpen()">Go</button>
+  </div>
+
+  <div class="hero-mini">
+    <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 17l6-6-6-6M12 19h8"/></svg>
+    <span>localhost:PORT — instant</span>
+    <span class="mini-badges"><span class="badge ok">0.4s</span><span class="badge">5 tabs</span></span>
+  </div>
+
+  <div class="section"><h2>Local projects</h2><span class="count" id="count">6</span><button onclick="document.getElementById('dlg').showModal()">+ Add</button></div>
+  <div class="grid" id="grid"></div>
+
+  <div class="foot"><a href="./browser.html">Open browser &gt;</a> · <a href="./features.html">Features spec &gt;</a></div>
+</div>
+
+<dialog id="dlg">
+  <b>Add project</b>
+  <label>Name</label><input id="fName" value="My Vite App"/>
+  <label>Port / URL</label><input id="fUrl" value="5173"/>
+  <menu><button onclick="document.getElementById('dlg').close()">Cancel</button><button class="primary" onclick="fakeAdd()">Save</button></menu>
+</dialog>
+
+<script src="./app.js"></script>
+<script>renderGrid();document.getElementById('quickInput').addEventListener('keydown',e=>{if(e.key==='Enter')quickOpen()})</script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+package com.localview.browser
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+
+/** F12 panel: HTML source / JS console / LOG for the active :PORT. */
+class DevToolsSheet(
+    private val web: LocalWebView,
+    private val port: Int,
+) : BottomSheetDialogFragment() {
+
+    private lateinit var code: TextView
+    private lateinit var portView: TextView
+    private var tab = "html"
+
+    override fun onCreateView(i: LayoutInflater, c: ViewGroup?, s: Bundle?): View =
+        i.inflate(R.layout.sheet_devtools, c, false)
+
+    override fun onViewCreated(v: View, s: Bundle?) {
+        code = v.findViewById(R.id.dtCode)
+        portView = v.findViewById(R.id.dtPort)
+        portView.text = ":$port"
+        val h: Button = v.findViewById(R.id.dtHtml)
+        val j: Button = v.findViewById(R.id.dtJs)
+        val l: Button = v.findViewById(R.id.dtLog)
+        h.setOnClickListener { tab = "html"; render() }
+        j.setOnClickListener { tab = "js"; render() }
+        l.setOnClickListener { tab = "log"; render() }
+        render()
+    }
+
+    private fun render() {
+        when (tab) {
+            "html" -> web.pageHtml { code.text = "<!-- http://localhost:$port/ -->\n$it" }
+            "js" -> code.text = "// evaluate JS on :$port — type in console via page\n" +
+                "fetch(`http://localhost:$port/api/health`)\n  .then(r => r.json()).then(console.log)"
+            else -> code.text = web.consoleLines.takeLast(30).joinToString("\n").ifBlank { "[SYS] no console output yet" }
+        }
+    }
+}

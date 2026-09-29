@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="lv_bg">#0A0E0B</color>
+    <color name="lv_panel">#0F1412</color>
+    <color name="lv_acc">#4ED58A</color>
+    <color name="lv_cyan">#56C2BB</color>
+    <color name="lv_amber">#E2A84E</color>
+    <color name="lv_txt">#E2EFE6</color>
+    <color name="lv_mut">#8FA895</color>
+</resources>

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>LocalView browser (mockup)</title>
+<link rel="stylesheet" href="./styles.css"/>
+</head>
+<body>
+<div class="phone">
+  <div class="chrome">
+    <button class="nav" onclick="history.back()" title="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <button class="nav" onclick="history.forward()" title="Forward"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg></button>
+    <button class="nav" id="reloadBtn" title="Tap reload / Long-press hard reload"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 3v5h-5"/></svg></button>
+    <div class="urlbar"><span class="portpill" id="portPill">:5173</span><input id="url" value="http://localhost:5173/"/></div>
+    <button class="tabbadge" onclick="toggleTabs()" title="Tabs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="7" height="7"/><rect x="13" y="4" width="7" height="7"/><rect x="4" y="13" width="7" height="7"/><rect x="13" y="13" width="7" height="7"/></svg><span id="tabN">3</span></button>
+    <button class="nav" onclick="openMenu()" title="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+  <div class="tabs" id="tabs"></div>
+
+  <div class="view" id="view"></div>
+
+  <div class="dtpanel" id="dtpanel" hidden>
+    <div class="dt-head">
+      <span class="dt-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 17l6-6-6-6M12 19h8"/></svg><span id="dtPort">:5173</span><span class="dt-f12">F12</span></span>
+      <span class="dt-tabs"><button id="dtTabHtml" class="on" onclick="setDtTab('html')">HTML</button><button id="dtTabJs" onclick="setDtTab('js')">JS</button><button id="dtTabLog" onclick="setDtTab('log')">LOG</button></span>
+      <button class="dt-close" onclick="toggleDevtools()" title="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <pre class="dt-code" id="dtCode"></pre>
+  </div>
+
+  <div class="devbar">
+    <div class="lat"><span id="stat">[SYS] probing localhost... [mock]</span><b id="ms">12ms / HMR WS OK</b></div>
+    <div class="ports" id="ports"></div>
+    <div class="dtbar">
+      <button class="dtbtn" id="dtBtn" onclick="toggleDevtools()" title="Toggle DevTools (F12)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 17l6-6-6-6M12 19h8"/></svg>DEVTOOLS [F12]</button>
+      <span class="hint">PORT PILLS = SWITCH / HOLD RELOAD = HARD RELOAD</span>
+    </div>
+  </div>
+</div>
+
+<div class="scrim" id="scrim" onclick="closeMenu()"></div>
+<div class="menu" id="menu"><div class="sheet">
+  <div class="grab"></div>
+  <div class="sheet-head"><span>Menu</span><span class="hint">LOCALVIEW</span></div>
+  <button class="row" onclick="fakeToast('Shared link [mock]')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5-5 5 5M5 15v6h14v-6"/></svg> Share localhost link</button>
+  <button class="row" onclick="hardReload()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 3v5h-5"/></svg> Hard reload — bypass cache</button>
+  <button class="row" onclick="fakeToast('Site data cleared [mock]')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M9 7V4h6v3M6 7l1 14h10l1-14"/></svg> Clear site data for this port</button>
+  <button class="row" onclick="fakeToast('Pinned to Home [mock]')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 4h6l1 7 3 3v2H5v-2l3-3zM12 16v5"/></svg> Pin project to Home</button>
+  <button class="row" onclick="location.href='./index.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 17l6-6-6-6M12 19h8"/></svg> All projects dashboard</button>
+</div></div>
+
+<script src="./app.js"></script>
+<script>initBrowser();</script>
+</body>
+</html>

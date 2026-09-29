@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LocalView</string>
+    <string name="add_title">Add project</string>
+    <string name="add_name_hint">Name</string>
+    <string name="add_port_hint">Port — e.g. 5173</string>
+</resources>

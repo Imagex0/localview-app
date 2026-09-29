@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>LocalView — features (mockup)</title>
+<link rel="stylesheet" href="./styles.css"/>
+<style>
+.feat{margin:0 14px 12px;border:2px solid var(--line-dim);background:var(--panel);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.feat.drop{box-shadow:none;border-color:var(--line-faint);opacity:.92}
+.feat header{padding:10px 12px;display:flex;align-items:center;gap:10px;border-bottom:1px dashed var(--line-dim);font-size:12px;text-transform:uppercase;letter-spacing:1px}
+.feat.keep header{border-top:4px solid var(--acc)}
+.feat.keep:nth-of-type(2) header{border-top-color:var(--cyan)}
+.feat.keep:nth-of-type(3) header{border-top-color:var(--moss)}
+.feat.keep:nth-of-type(4) header{border-top-color:var(--amber)}
+.feat.drop header{border-top:4px solid var(--mut2)}
+.feat header svg{width:16px;height:16px;color:var(--acc)}
+.feat.drop header svg{color:var(--mut2)}
+.feat header b{color:var(--txt)}
+.feat header span{margin-left:auto;font-size:10px;color:var(--mut2)}
+.feat ul{list-style:none;margin:0;padding:0}
+.feat li{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border-top:1px solid var(--line-faint);font-size:12px;color:var(--mut)}
+.feat li:first-child{border-top:0}
+.feat li svg{width:14px;height:14px;margin-top:2px;flex:0 0 auto;color:var(--acc)}
+.feat.drop li svg{color:var(--clay)}
+.feat li b{color:var(--txt);font-weight:400}
+.feat code{font-size:11px;color:var(--cyan);background:#0e1411;border:1px solid var(--line-faint);padding:1px 5px;border-radius:var(--radius-sm)}
+.feat.drop code{color:var(--mut)}
+.sum{display:flex;gap:8px;margin:12px 14px 10px}
+.sum div{flex:1;border:2px solid var(--line-dim);background:var(--panel);border-radius:var(--radius);padding:10px 12px;box-shadow:var(--shadow)}
+.sum div:last-child{border-color:var(--line-faint);box-shadow:none}
+.sum b{font-size:22px;display:block}
+.sum:first-child b{color:var(--acc)}
+.sum span{font-size:10px;letter-spacing:1px;color:var(--mut);text-transform:uppercase}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="topbar">
+    <button class="iconbtn" onclick="location.href='./index.html'" title="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div class="title">Features<small>keep / drop — lightweight spec</small></div>
+    <span class="chip">16 keep</span>
+  </div>
+
+  <div class="sum">
+    <div><b style="color:var(--acc)">16</b><span>keep — tuned</span></div>
+    <div><b style="color:var(--mut)">400+</b><span>drop — dead weight</span></div>
+  </div>
+
+  <div class="section"><h2>Keep — ships in LocalView</h2></div>
+
+  <div class="feat keep">
+    <header><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg><b>Core engine</b><span>4 items</span></header>
+    <ul>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg><span><b>Tuned WebView</b> — JS, DOM storage, ServiceWorker, HMR WS forced ON. <code>WebViewFactory</code> + cleartext.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg><span><b>Bare-port omnibox</b> — <code>5173 / :3000</code> resolve to localhost. <code>UrlHandler</code>.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg><span><b>Max 5 tabs</b> — no freeze/restore. <code>TabModel</code> trimmed.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg><span><b>Slim clients</b> — progress + title + console only.</span></li>
+    </ul>
+  </div>
+
+  <div class="feat keep">
+    <header><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 17l6-6-6-6M12 19h8"/></svg><b>Dev workflow</b><span>6 items · priority</span></header>
+    <ul>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg><span><b>DevTools panel [F12]</b> — bottom-docked HTML / JS / LOG bound to active <code>:PORT</code>. Button in bottom devbar.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg><span><b>Hard reload</b> — long-press bypasses cache.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg><span><b>Clear site data per port</b> — one tap reset.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg><span><b>Port pills + live probe</b> — <code>HEAD :PORT</code>, [OK]/[OFF].</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg><span><b>Projects repo</b> — <code>{name, url, port}</code> + pin to Home.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg><span><b>Desktop-UA toggle</b> — single switch.</span></li>
+    </ul>
+  </div>
+
+  <div class="feat keep">
+    <header><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="7" height="7"/><rect x="13" y="4" width="7" height="7"/><rect x="4" y="13" width="7" height="7"/><rect x="13" y="13" width="7" height="7"/></svg><b>Essentials</b><span>4 items</span></header>
+    <ul>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg><span><b>24h history</b> — ring buffer, no full page.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg><span><b>Bookmarks = projects</b> — no folders / import.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg><span><b>Downloads</b> — <code>DownloadManager</code> only.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg><span><b>Nav guards + SSL dialog</b> — <code>intent/file/data</code> hardening.</span></li>
+    </ul>
+  </div>
+
+  <div class="feat keep">
+    <header><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5-5 5 5M5 15v6h14v-6"/></svg><b>Look</b><span>2 items</span></header>
+    <ul>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg><span><b>One Matrix-brutalist theme</b> — no palettes / wallpapers / fonts.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg><span><b>Text-size only</b> — single accessibility control.</span></li>
+    </ul>
+  </div>
+
+  <div class="section"><h2>Drop — stays in Solipsism</h2></div>
+
+  <div class="feat drop">
+    <header><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg><b>Heavy / off-mission</b><span>11 groups</span></header>
+    <ul>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg><span><b>Antares engine</b> — <code>browser/engine</code>, AIDL, chooser.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg><span><b>Adblock</b> — <code>adblock/</code>, cosmetic filters.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg><span><b>Malware + VirusTotal</b> — <code>malware/</code>, <code>virustotal/</code>.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg><span><b>Userscripts</b> — <code>userscript/</code> + editor.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg><span><b>QR scanner</b> — <code>qr/</code> + CameraX.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg><span><b>Studio / Vault / EQ</b> — <code>screenshot/</code>, <code>vault/</code>, <code>audio/</code>.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg><span><b>Rail Studio + chrome modes</b> — 4 delegates, one chrome only.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg><span><b>Homepage studio</b> — wallpapers, motto, grids.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg><span><b>Incognito process</b> — <code>:incognito</code>.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg><span><b>Search + suggestions</b> — <code>search/</code>, ports-only omnibox.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg><span><b>Cookie mgr / Decoy / TTS / updater / locales / donations</b>.</span></li>
+    </ul>
+  </div>
+
+  <div class="foot">Spec: <code>webview/features.md</code> — <a href="./index.html">Dashboard &gt;</a> · <a href="./browser.html">Browser &gt;</a></div>
+</div>
+<script src="./app.js"></script>
+<script>initResizers();</script>
+</body>
+</html>

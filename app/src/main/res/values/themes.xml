@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.LocalView" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/lv_acc</item>
+        <item name="colorOnPrimary">#07120C</item>
+        <item name="android:windowBackground">@color/lv_bg</item>
+        <item name="android:textColor">@color/lv_txt</item>
+        <item name="android:editTextBackground">@color/lv_panel</item>
+    </style>
+</resources>
