@@ -20,6 +20,15 @@ class DevToolsSheet(
     private lateinit var portView: TextView
     private var tab = initialTab
 
+    /** Plain-text source per tab — what COPY puts on the clipboard. */
+    private var lastHtml = ""
+    private val jsText: String
+        get() = "// console — localhost:$port\n" +
+            "fetch(`http://localhost:$port/api/health`)\n" +
+            "  .then(r => r.json()).then(console.log)"
+    private val logText: String
+        get() = web.consoleLines.takeLast(30).joinToString("\n").ifBlank { "[SYS] no console output yet" }
+
     override fun onCreateView(i: LayoutInflater, c: ViewGroup?, s: Bundle?): View =
         i.inflate(R.layout.sheet_devtools, c, false)
 
@@ -33,6 +42,7 @@ class DevToolsSheet(
         h.setOnClickListener { select("html") }
         j.setOnClickListener { select("js") }
         l.setOnClickListener { select("log") }
+        v.findViewById<Button>(R.id.dtCopy).setOnClickListener { copyCurrent() }
         render()
     }
 
@@ -44,10 +54,25 @@ class DevToolsSheet(
 
     private fun render() {
         when (tab) {
-            "html" -> web.pageHtml { code.text = "<!-- http://localhost:$port/ -->\n$it" }
-            "js" -> code.text = "// evaluate JS on :$port — type in console via page\n" +
-                "fetch(`http://localhost:$port/api/health`)\n  .then(r => r.json()).then(console.log)"
-            else -> code.text = web.consoleLines.takeLast(30).joinToString("\n").ifBlank { "[SYS] no console output yet" }
+            "html" -> web.pageHtml {
+                lastHtml = it
+                code.text = "<!-- http://localhost:$port/ -->\n$it"
+            }
+            "js" -> code.text = jsText
+            else -> code.text = logText
         }
+    }
+
+    /** Copies the visible snippet (HTML / JS / LOG) to the clipboard. */
+    private fun copyCurrent() {
+        val text = when (tab) {
+            "html" -> "<!-- http://localhost:$port/ -->\n$lastHtml"
+            "js" -> jsText
+            else -> logText
+        }.ifBlank { return }
+        val cm = requireContext().getSystemService(android.content.Context.CLIPBOARD_SERVICE)
+            as android.content.ClipboardManager
+        cm.setPrimaryClip(android.content.ClipData.newPlainText("localview:$port:$tab", text))
+        android.widget.Toast.makeText(requireContext(), "[SYS] copied $tab :$port", android.widget.Toast.LENGTH_SHORT).show()
     }
 }

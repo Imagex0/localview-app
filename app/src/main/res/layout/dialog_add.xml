@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="monospace"
+        android:text="NAME"
+        android:textColor="@color/lv_acc"
+        android:textSize="10sp" />
+
+    <EditText
+        android:id="@+id/fName"
+        style="@style/Widget.LocalView.UrlBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:hint="My Vite App"
+        android:inputType="text"
+        android:singleLine="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:fontFamily="monospace"
+        android:text="PORT / URL"
+        android:textColor="@color/lv_acc"
+        android:textSize="10sp" />
+
+    <EditText
+        android:id="@+id/fPort"
+        style="@style/Widget.LocalView.UrlBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:hint="5173"
+        android:inputType="text"
+        android:singleLine="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:fontFamily="monospace"
+        android:text="TRY > 5173 / :3000 / localhost:8000"
+        android:textColor="@color/lv_mut2"
+        android:textSize="10sp" />
+</LinearLayout>

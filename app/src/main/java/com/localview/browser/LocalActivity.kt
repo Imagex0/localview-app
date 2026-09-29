@@ -47,6 +47,10 @@ class LocalActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Mockup is dark-only: pin night mode before inflation so dialogs match.
+        androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(
+            androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES,
+        )
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_local)
         repo = ProjectsRepo(this)
@@ -270,19 +274,17 @@ class LocalActivity : AppCompatActivity() {
     }
 
     private fun addDialog() {
-        val v = LayoutInflater.from(this).inflate(android.R.layout.simple_list_item_1, null)
-        val name = EditText(this).apply { hint = getString(R.string.add_name_hint) }
-        val port = EditText(this).apply { hint = getString(R.string.add_port_hint); inputType = android.text.InputType.TYPE_CLASS_TEXT }
-        val box = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; addView(name); addView(port); setPadding(40, 20, 40, 20) }
+        val box = LayoutInflater.from(this).inflate(R.layout.dialog_add, null)
+        val name: EditText = box.findViewById(R.id.fName)
+        val port: EditText = box.findViewById(R.id.fPort)
         AlertDialog.Builder(this).setTitle(getString(R.string.add_title)).setView(box)
             .setPositiveButton("Save") { _, _ ->
-                val p = repo.add(name.text.toString(), port.text.toString())
+                val (p, ok) = repo.add(name.text.toString(), port.text.toString())
                 reloadProjects()
                 lifecycleScope.launch { probeAll() }
-                toast("[SYS] saved :${p.port}")
+                toast(if (ok) "[SYS] saved ${p.name} :${p.port} (${repo.count()})" else "[ERR] write failed — retry")
             }
             .setNegativeButton("Cancel", null).show()
-        v.toString()
     }
 
     private fun toast(m: String) { statLine.text = m }

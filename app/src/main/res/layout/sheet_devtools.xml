@@ -67,6 +67,15 @@
                 android:layout_marginStart="6dp"
                 app:backgroundTint="@null"
                 android:text="LOG" />
+
+            <Button
+                android:id="@+id/dtCopy"
+                style="@style/Widget.LocalView.GhostButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                app:backgroundTint="@null"
+                android:text="COPY" />
         </LinearLayout>
     </LinearLayout>
 

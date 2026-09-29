@@ -35,11 +35,15 @@ class ProjectsRepo(context: Context) {
         return prefs.edit().putString(KEY, arr.toString()).commit()
     }
 
-    fun add(name: String, input: String): Project {
+    fun add(name: String, input: String): Pair<Project, Boolean> {
         val t = LocalPort.parse(input)
         val p = Project(name.ifBlank { "localhost:${t.port ?: "app"}" }, t.url, t.port ?: 80)
-        save(listOf(p) + load().filterNot { it.port == p.port })
-        return p
+        // Write, read back, verify the port is really on disk. Retry once.
+        var ok = save(listOf(p) + load().filterNot { it.port == p.port })
+        if (ok && load().none { it.port == p.port }) {
+            ok = save(listOf(p) + load().filterNot { it.port == p.port })
+        }
+        return p to (ok && load().any { it.port == p.port })
     }
 
     fun remove(port: Int): Boolean = save(load().filterNot { it.port == port })

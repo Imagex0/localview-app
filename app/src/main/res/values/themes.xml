@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Forced dark: mockup is dark-only, no light mode. -->
-    <style name="Theme.LocalView" parent="Theme.MaterialComponents.NoActionBar">
+    <style name="Theme.LocalView" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/lv_acc</item>
         <item name="colorPrimaryVariant">@color/lv_acc_dim</item>
         <item name="colorOnPrimary">@color/lv_ink</item>
