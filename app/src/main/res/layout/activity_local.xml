@@ -564,60 +564,26 @@
         </ScrollView>
     </LinearLayout>
 
-    <!-- ============ DEVBAR (.devbar) ============ -->
+    <!-- ============ DEV TOOLS BAR: future tools dock, F12 first ============ -->
     <LinearLayout
         android:id="@+id/devbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/lv_bg"
         android:orientation="vertical"
-        android:padding="10dp"
         android:visibility="gone">
 
-        <LinearLayout
+        <View
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/statLine"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:fontFamily="monospace"
-                android:text="[SYS] idle"
-                android:textColor="@color/lv_mut"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/statMs"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="monospace"
-                android:text=""
-                android:textColor="@color/lv_cyan"
-                android:textSize="10sp" />
-        </LinearLayout>
-
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:scrollbars="none">
-
-            <LinearLayout
-                android:id="@+id/portStrip"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" />
-        </HorizontalScrollView>
+            android:layout_height="2dp"
+            android:background="@color/lv_line_dim" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="10dp">
 
             <Button
                 android:id="@+id/btnDevtools"
@@ -633,7 +599,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:fontFamily="monospace"
-                android:text="PORT PILLS = SWITCH"
+                android:text="DEV TOOLS — MORE SOON"
                 android:textColor="@color/lv_mut2"
                 android:textSize="10sp" />
         </LinearLayout>

@@ -36,8 +36,6 @@ class LocalActivity : AppCompatActivity() {
 
     private lateinit var web: LocalWebView
     private lateinit var urlBar: EditText
-    private lateinit var statLine: TextView
-    private lateinit var statMs: TextView
     private lateinit var portPill: TextView
     private lateinit var tabCount: TextView
     private lateinit var adapter: ProjectAdapter
@@ -65,8 +63,6 @@ class LocalActivity : AppCompatActivity() {
 
         web = findViewById(R.id.web)
         urlBar = findViewById(R.id.urlBar)
-        statLine = findViewById(R.id.statLine)
-        statMs = findViewById(R.id.statMs)
         portPill = findViewById(R.id.portPill)
         tabCount = findViewById(R.id.tabCount)
         dtTab = store.devtoolsTab
@@ -118,8 +114,8 @@ class LocalActivity : AppCompatActivity() {
         findViewById<Button>(R.id.dtCopy).setOnClickListener { copyDt() }
         findViewById<Button>(R.id.dtClose).setOnClickListener { toggleDt() }
 
-        web.onConsole = { line -> statLine.text = "[LOG] ${line.take(120)}" }
-        web.onProgress = { p -> if (p == 100) statLine.text = "[OK] loaded" }
+        web.onConsole = { if (dtOpen && dtTab == "log") renderDt() }
+        web.onProgress = { _ -> }
 
         handleIntent()
         restoreSession()
@@ -145,7 +141,6 @@ class LocalActivity : AppCompatActivity() {
         tabs.clear()
         tabs.addAll(saved)
         renderTabs()
-        renderPorts()
         val a = store.activePort.takeIf { saved.contains(it) } ?: saved.last()
         openUrl(store.lastUrl(a) ?: "http://localhost:$a/", a)
     }
@@ -155,7 +150,6 @@ class LocalActivity : AppCompatActivity() {
         projects = repo.load()
         adapter.submit(projects, live)
         findViewById<TextView>(R.id.projCount).text = projects.size.toString()
-        renderPorts()
     }
 
     override fun onKeyDown(code: Int, event: KeyEvent): Boolean {
@@ -206,16 +200,11 @@ class LocalActivity : AppCompatActivity() {
         showBrowser()
         web.loadUrl(url)
         renderTabs()
-        renderPorts()
         if (dtOpen) renderDt()
         lifecycleScope.launch {
             val p = port ?: return@launch
             val r = Probe.check(p)
-            statLine.text = if (r.live) "[OK] :$p live — 200" else "[OFF] :$p offline"
-            statLine.setTextColor(
-                getColor(if (r.live) R.color.lv_acc else R.color.lv_amber),
-            )
-            statMs.text = if (r.live) "${r.ms}ms / HMR WS OK" else "retry / start server"
+            if (!r.live) toast("[OFF] :$p offline — start server")
         }
     }
 
@@ -240,37 +229,63 @@ class LocalActivity : AppCompatActivity() {
         lifecycleScope.launch { refresh() }
     }
 
-    private fun chip(text: String, on: Boolean): Button =
-        Button(this, null, 0, R.style.Widget_LocalView_Chip).apply {
-            this.text = text
-            minWidth = 0
+    /** Tab chip with a visible close key — no hidden gestures. */
+    private fun chip(port: Int, on: Boolean): LinearLayout {
+        val row = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = android.view.Gravity.CENTER_VERTICAL
             setBackgroundResource(if (on) R.drawable.lv_chip_on else R.drawable.lv_chip)
+            setPadding(dp(9), dp(6), dp(4), dp(6))
+            isClickable = true
+            isFocusable = true
+            setOnClickListener { openUrl("http://localhost:$port/", port) }
+        }
+        val label = TextView(this).apply {
+            text = ":$port"
+            typeface = android.graphics.Typeface.MONOSPACE
+            textSize = 11f
             setTextColor(getColor(if (on) R.color.lv_acc else R.color.lv_mut))
         }
+        val x = TextView(this).apply {
+            text = "×"
+            typeface = android.graphics.Typeface.MONOSPACE
+            textSize = 14f
+            setPadding(dp(8), 0, dp(4), 0)
+            setTextColor(getColor(R.color.lv_mut2))
+            isClickable = true
+            isFocusable = true
+            setOnClickListener { closeTab(port) }
+        }
+        row.addView(label)
+        row.addView(x)
+        return row
+    }
+
+    private fun closeTab(port: Int) {
+        tabs.remove(port)
+        if (tabs.isEmpty()) {
+            active = -1
+            persistSession()
+            showDashboard()
+            return
+        }
+        if (active == port) {
+            active = tabs.last()
+            openUrl(store.lastUrl(active) ?: "http://localhost:$active/", active)
+        } else {
+            renderTabs()
+            persistSession()
+        }
+    }
 
     private fun renderTabs() {
         val strip = findViewById<LinearLayout>(R.id.tabStrip)
         strip.removeAllViews()
         tabCount.text = tabs.size.toString()
         tabs.forEach { p ->
-            val b = chip(":$p", p == active).apply {
-                setOnClickListener { openUrl("http://localhost:$p/", p) }
-                setOnLongClickListener { tabs.remove(p); if (active == p) active = tabs.lastOrNull() ?: -1; renderTabs(); true }
-            }
-            strip.addView(b)
-            (b.layoutParams as? LinearLayout.LayoutParams)?.marginEnd = dp(6)
-        }
-    }
-
-    private fun renderPorts() {
-        val strip = findViewById<LinearLayout>(R.id.portStrip)
-        strip.removeAllViews()
-        (projects.map { it.port } + listOf(3000, 5173, 8000, 8080, 9000)).distinct().forEach { p ->
-            val b = chip(":$p", p == active).apply {
-                setOnClickListener { openUrl("http://localhost:$p/", p) }
-            }
-            strip.addView(b)
-            (b.layoutParams as? LinearLayout.LayoutParams)?.marginEnd = dp(6)
+            val c = chip(p, p == active)
+            strip.addView(c)
+            (c.layoutParams as? LinearLayout.LayoutParams)?.marginEnd = dp(6)
         }
     }
 
@@ -387,7 +402,10 @@ class LocalActivity : AppCompatActivity() {
             .setNegativeButton("Cancel", null).show()
     }
 
-    private fun toast(m: String) { statLine.text = m }
+    private fun toast(m: String) {
+        // System toast: custom views are ignored on Android 12+, plain text always shows.
+        android.widget.Toast.makeText(this, m, android.widget.Toast.LENGTH_SHORT).show()
+    }
 
     private class ProjectAdapter(
         val onOpen: (ProjectsRepo.Project) -> Unit,
