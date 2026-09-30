@@ -24,6 +24,7 @@ class LocalWebView @JvmOverloads constructor(
     val consoleLines = ArrayDeque<String>(200)
     var onConsole: ((String) -> Unit)? = null
     var onProgress: ((Int) -> Unit)? = null
+    private var mobileUa = ""
 
     init {
         with(settings) {
@@ -79,7 +80,6 @@ class LocalWebView @JvmOverloads constructor(
     /** Desktop view: spoof a Linux x86_64 Chrome token set, reload to apply. */
     var desktopOn = false
         private set
-    private var mobileUa = ""
 
     fun setDesktopMode(on: Boolean) {
         if (on == desktopOn && settings.userAgentString.isNotEmpty()) return
