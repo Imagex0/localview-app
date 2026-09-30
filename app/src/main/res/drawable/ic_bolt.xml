@@ -3,24 +3,25 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- v0.2 window mark: brutalist terminal window, phosphor frame, cyan prompt -->
+    <!-- v0.2 window mark: centered in the safe zone, comfortable margins,
+         bold phosphor frame, cyan prompt. Nothing touches the mask edge. -->
     <path
-        android:pathData="M20,26 L88,26 L88,82 L20,82 Z"
+        android:pathData="M32,36 L76,36 L76,72 L32,72 Z"
         android:strokeColor="#4ED58A"
         android:strokeWidth="5"
         android:strokeLineJoin="miter" />
     <path
-        android:pathData="M20,40 L88,40"
+        android:pathData="M32,47 L76,47"
         android:strokeColor="#4ED58A"
         android:strokeWidth="4" />
     <path
         android:fillColor="#4ED58A"
-        android:pathData="M27,29 L35,29 L35,37 L27,37 Z" />
+        android:pathData="M37,39 L44,39 L44,46 L37,46 Z" />
     <path
         android:fillColor="#2C4F3A"
-        android:pathData="M40,29 L48,29 L48,37 L40,37 Z" />
+        android:pathData="M48,39 L55,39 L55,46 L48,46 Z" />
     <path
-        android:pathData="M30,62 L42,54 L30,46 M46,64 L62,64"
+        android:pathData="M39,63 L48,56 L39,49 M52,64 L64,64"
         android:strokeColor="#56C2BB"
         android:strokeWidth="5"
         android:strokeLineCap="square" />
