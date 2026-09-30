@@ -43,6 +43,7 @@ class LocalActivity : AppCompatActivity() {
     private var dtOpen = false
     private var dtTab = "html"
     private var lastHtml = ""
+    private var maximized = false
 
     companion object {
         /** Mockup accent variety, desaturated Matrix set. */
@@ -107,6 +108,12 @@ class LocalActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnAdd).setOnClickListener { addDialog() }
         findViewById<Button>(R.id.btnAddTop).setOnClickListener { addDialog() }
         findViewById<Button>(R.id.btnDevtools).setOnClickListener { devtools() }
+        findViewById<View>(R.id.btnMaximize).setOnClickListener { setMaximized(true) }
+        findViewById<View>(R.id.btnMinimize).setOnClickListener { setMaximized(false) }
+        findViewById<View>(R.id.btnDesktop).setOnClickListener { toggleDesktop() }
+        findViewById<View>(R.id.btnTools).setOnClickListener { toolsHub() }
+        web.setDesktopMode(store.desktopMode)
+        paintDesktop()
         findViewById<Button>(R.id.dtHtml).setOnClickListener { selectDt("html") }
         findViewById<Button>(R.id.dtJs).setOnClickListener { selectDt("js") }
         findViewById<Button>(R.id.dtLog).setOnClickListener { selectDt("log") }
@@ -120,6 +127,62 @@ class LocalActivity : AppCompatActivity() {
         handleIntent()
         restoreSession()
         lifecycleScope.launch { probeAll() }
+    }
+
+    /** Maximize: page only — chrome, tabs, devbar and panels all hide. */
+    private fun setMaximized(on: Boolean) {
+        maximized = on
+        val chrome = if (on) View.GONE else View.VISIBLE
+        findViewById<View>(R.id.chromeBox).visibility = chrome
+        findViewById<View>(R.id.chromeDivider).visibility = chrome
+        findViewById<View>(R.id.tabsRow).visibility = chrome
+        findViewById<View>(R.id.devbar).visibility = chrome
+        if (on) {
+            findViewById<View>(R.id.dtPanel).visibility = View.GONE
+            dtOpen = false
+        }
+        findViewById<View>(R.id.btnMinimize).visibility = if (on) View.VISIBLE else View.GONE
+        val ctl = androidx.core.view.WindowCompat.getInsetsController(window, window.decorView)
+        if (on) {
+            ctl.hide(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+            ctl.systemBarsBehavior =
+                androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        } else {
+            ctl.show(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+        }
+    }
+
+    /** Desktop view: spoof desktop UA, persist, reload. */
+    private fun toggleDesktop() {
+        val on = !web.desktopOn
+        web.setDesktopMode(on)
+        store.desktopMode = on
+        paintDesktop()
+        toast(if (on) "[SYS] desktop view [ON]" else "[SYS] desktop view [OFF]")
+    }
+
+    private fun paintDesktop() {
+        val on = web.desktopOn
+        findViewById<View>(R.id.btnDesktop).apply {
+            (this as? androidx.appcompat.widget.AppCompatImageButton)?.setColorFilter(
+                getColor(if (on) R.color.lv_acc else R.color.lv_mut),
+            )
+            background = getDrawable(if (on) R.drawable.lv_chip_on else R.drawable.lv_nav)
+        }
+    }
+
+    /** Hamburger hub: every dev tool in one sheet with live state. */
+    private fun toolsHub() {
+        ToolsSheet(dtOpen, maximized, web.desktopOn) { w ->
+            when (w) {
+                0 -> devtools()
+                1 -> setMaximized(!maximized)
+                2 -> toggleDesktop()
+                3 -> { web.hardReload(); toast("[SYS] hard reload") }
+                4 -> { web.clearSiteData(active); toast("[SYS] site data cleared") }
+                5 -> storageDialog()
+            }
+        }.show(supportFragmentManager, "tools")
     }
 
     override fun onPause() {
@@ -159,6 +222,7 @@ class LocalActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
+        if (maximized) { setMaximized(false); return }
         if (web.visibility == View.VISIBLE && web.canGoBack()) web.goBack()
         else if (web.visibility == View.VISIBLE) showDashboard()
         else super.onBackPressed()

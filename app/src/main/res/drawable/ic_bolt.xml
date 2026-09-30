@@ -3,7 +3,11 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+    <!-- v0.2 mark: sharper phosphor bolt over a terminal cursor bar -->
     <path
         android:fillColor="#4ED58A"
-        android:pathData="M59,18 L32,60 L50,60 L47,90 L76,48 L58,48 Z" />
+        android:pathData="M61,10 L30,58 L49,58 L45,88 L78,44 L57,44 Z" />
+    <path
+        android:fillColor="#56C2BB"
+        android:pathData="M30,94 L78,94 L78,99 L30,99 Z" />
 </vector>

@@ -266,7 +266,7 @@
                     android:paddingRight="8dp"
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"
-                    android:text="v0.1"
+                    android:text="v0.2"
                     android:textColor="@color/lv_cyan"
                     android:textSize="10sp" />
             </LinearLayout>
@@ -439,6 +439,19 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone" />
+
+        <!-- Floating restore key: only visible in maximized (borderless) mode -->
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/btnMinimize"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="14dp"
+            android:background="@drawable/lv_nav"
+            android:contentDescription="Restore borders"
+            android:src="@drawable/ic_minimize"
+            android:visibility="gone"
+            app:tint="@color/lv_acc" />
     </FrameLayout>
 
     <!-- ============ DEVTOOLS PANEL (dtpanel, in browser mode) ============ -->
@@ -564,7 +577,7 @@
         </ScrollView>
     </LinearLayout>
 
-    <!-- ============ DEV TOOLS BAR: future tools dock, F12 first ============ -->
+    <!-- ============ DEV TOOLS BAR: the dock. F12 + view tools + hub ============ -->
     <LinearLayout
         android:id="@+id/devbar"
         android:layout_width="match_parent"
@@ -578,30 +591,65 @@
             android:layout_height="2dp"
             android:background="@color/lv_line_dim" />
 
-        <LinearLayout
+        <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="10dp">
+            android:scrollbars="none">
 
-            <Button
-                android:id="@+id/btnDevtools"
-                style="@style/Widget.LocalView.GhostButton"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:backgroundTint="@null"
-                android:text="DEVTOOLS [F12]" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="10dp">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_weight="1"
-                android:fontFamily="monospace"
-                android:text="DEV TOOLS — MORE SOON"
-                android:textColor="@color/lv_mut2"
-                android:textSize="10sp" />
-        </LinearLayout>
+                <Button
+                    android:id="@+id/btnDevtools"
+                    style="@style/Widget.LocalView.GhostButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:backgroundTint="@null"
+                    android:text="DEVTOOLS [F12]" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/btnMaximize"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/lv_nav"
+                    android:contentDescription="Maximize page"
+                    android:src="@drawable/ic_expand"
+                    app:tint="@color/lv_acc" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/btnDesktop"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/lv_nav"
+                    android:contentDescription="Desktop view"
+                    android:src="@drawable/ic_monitor"
+                    app:tint="@color/lv_mut" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/btnTools"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/lv_nav"
+                    android:contentDescription="All dev tools"
+                    android:src="@drawable/ic_menu"
+                    app:tint="@color/lv_acc" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:fontFamily="monospace"
+                    android:text="TOOLS HUB ☰ FOR ALL"
+                    android:textColor="@color/lv_mut2"
+                    android:textSize="10sp" />
+            </LinearLayout>
+        </HorizontalScrollView>
     </LinearLayout>
 </LinearLayout>

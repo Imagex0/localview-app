@@ -42,6 +42,7 @@ class LocalWebView @JvmOverloads constructor(
             mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
             userAgentString = userAgentString.replace("; wv", "")
         }
+        mobileUa = settings.userAgentString
         webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                 val url = request.url.toString()
@@ -73,6 +74,24 @@ class LocalWebView @JvmOverloads constructor(
                 onProgress?.invoke(progress)
             }
         }
+    }
+
+    /** Desktop view: spoof a Linux x86_64 Chrome token set, reload to apply. */
+    var desktopOn = false
+        private set
+    private var mobileUa = ""
+
+    fun setDesktopMode(on: Boolean) {
+        if (on == desktopOn && settings.userAgentString.isNotEmpty()) return
+        desktopOn = on
+        settings.userAgentString = if (on) {
+            mobileUa.replace("; wv", "")
+                .replace(Regex("Linux; Android [\\d.]+"), "X11; Linux x86_64")
+                .replace("Mobile", "")
+        } else {
+            mobileUa
+        }
+        if (url != null) reload()
     }
 
     /** Long-press reload semantics: bypass cache, like the mockup. */

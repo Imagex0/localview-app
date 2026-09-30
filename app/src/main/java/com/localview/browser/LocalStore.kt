@@ -47,6 +47,10 @@ class LocalStore(context: Context) {
         get() = prefs.getString(KEY_DTAB, "html") ?: "html"
         set(v) = prefs.edit().putString(KEY_DTAB, v).apply()
 
+    var desktopMode: Boolean
+        get() = prefs.getBoolean(KEY_DESK, false)
+        set(v) = prefs.edit().putBoolean(KEY_DESK, v).apply()
+
     // ---- storage accounting ----
     fun cacheBytes(): Long = app.cacheDir.walkTopDown()
         .filter { it.isFile }.sumOf { it.length() }
@@ -74,5 +78,6 @@ class LocalStore(context: Context) {
         private const val KEY_URL = "last_url_"
         private const val KEY_HIST = "history"
         private const val KEY_DTAB = "dtab"
+        private const val KEY_DESK = "desktop"
     }
 }
