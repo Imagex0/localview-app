@@ -53,6 +53,16 @@
                 android:src="@drawable/ic_reload"
                 app:tint="@color/lv_mut" />
 
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/btnNewTab"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/lv_nav"
+                android:contentDescription="New tab"
+                android:src="@drawable/ic_plus"
+                app:tint="@color/lv_acc" />
+
             <View
                 android:layout_width="0dp"
                 android:layout_height="0dp"

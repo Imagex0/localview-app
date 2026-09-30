@@ -118,8 +118,8 @@ class LocalActivity : AppCompatActivity() {
         findViewById<Button>(R.id.dtJs).setOnClickListener { selectDt("js") }
         findViewById<Button>(R.id.dtLog).setOnClickListener { selectDt("log") }
         findViewById<Button>(R.id.dtCopy).setOnClickListener { copyDt() }
-        findViewById<Button>(R.id.dtCopy).setOnClickListener { copyDt() }
         findViewById<Button>(R.id.dtClose).setOnClickListener { toggleDt() }
+        findViewById<View>(R.id.btnNewTab).setOnClickListener { newTabDialog() }
 
         web.onConsole = { if (dtOpen && dtTab == "log") renderDt() }
         web.onProgress = { _ -> }
@@ -152,13 +152,37 @@ class LocalActivity : AppCompatActivity() {
         }
     }
 
-    /** Desktop view: spoof desktop UA, persist, reload. */
+    /** Desktop view: spoof desktop UA, persist, reload — then PROVE it. */
     private fun toggleDesktop() {
         val on = !web.desktopOn
         web.setDesktopMode(on)
         store.desktopMode = on
         paintDesktop()
-        toast(if (on) "[SYS] desktop view [ON]" else "[SYS] desktop view [OFF]")
+        // Verify against the live WebView UA, not our flag: no "Mobile" token = desktop.
+        val ua = web.settings.userAgentString
+        val proven = if (on) !ua.contains("Mobile") else ua.contains("Mobile")
+        toast(
+            if (proven) "[SYS] desktop [${if (on) "ON" else "OFF"}] — verified"
+            else "[ERR] UA reject — still ${if (on) "mobile" else "desktop"}",
+        )
+    }
+
+    /** New tab key: bare port/URL in, tab out. Never touches saved projects. */
+    private fun newTabDialog() {
+        val box = layoutInflater.inflate(R.layout.dialog_add, null)
+        val name: EditText = box.findViewById(R.id.fName)
+        val port: EditText = box.findViewById(R.id.fPort)
+        name.hint = "Label (optional)"
+        androidx.appcompat.app.AlertDialog.Builder(this).setTitle("New tab").setView(box)
+            .setPositiveButton("Open") { _, _ ->
+                val label = name.text.toString().ifBlank { null }
+                val t = LocalPort.parse(port.text.toString().ifBlank { "5173" })
+                if (label != null && t.port != null) {
+                    toast("[TIP] use + ADD to save “$label” permanently")
+                }
+                openUrl(t.url, t.port)
+            }
+            .setNegativeButton("Cancel", null).show()
     }
 
     private fun paintDesktop() {
@@ -424,8 +448,10 @@ class LocalActivity : AppCompatActivity() {
             "fetch(`http://localhost:$active/api/health`)\n" +
             "  .then(r => r.json()).then(console.log)"
 
-    private fun dtLogText(): String =
-        web.consoleLines.takeLast(30).joinToString("\n").ifBlank { "[SYS] no console output yet" }
+    private fun dtLogText(): String {
+        val ua = "UA: " + web.settings.userAgentString
+        return (listOf(ua) + web.consoleLines.takeLast(29)).joinToString("\n").ifBlank { "[SYS] no console output yet" }
+    }
 
     private fun renderDt() {
         findViewById<TextView>(R.id.dtPortLabel).text = ":$active"

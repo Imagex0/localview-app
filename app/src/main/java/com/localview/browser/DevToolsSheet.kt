@@ -27,7 +27,8 @@ class DevToolsSheet(
             "fetch(`http://localhost:$port/api/health`)\n" +
             "  .then(r => r.json()).then(console.log)"
     private val logText: String
-        get() = web.consoleLines.takeLast(30).joinToString("\n").ifBlank { "[SYS] no console output yet" }
+        get() = (listOf("UA: " + web.settings.userAgentString) +
+            web.consoleLines.takeLast(29)).joinToString("\n").ifBlank { "[SYS] no console output yet" }
 
     override fun onCreateView(i: LayoutInflater, c: ViewGroup?, s: Bundle?): View =
         i.inflate(R.layout.sheet_devtools, c, false)
